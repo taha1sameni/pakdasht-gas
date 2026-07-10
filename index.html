@@ -75,6 +75,10 @@ html {
     animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .001ms !important;
+    animation-delay: 0s !important;
+}
+.site-loader {
+    display: none !important;
 }
 }
 body {
@@ -741,6 +745,7 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 16px;
     padding: 20px 4px;
     text-align: right;
@@ -899,9 +904,221 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 outline:3px solid var(--orange);
 outline-offset:2px;
 }
+
+/* =====================================================
+   INTRO ANIMATION — Ignition Loader
+===================================================== */
+html {
+    animation: lockScroll 3s step-end forwards;
+}
+@keyframes lockScroll {
+0%, 99.9% { overflow: hidden; }
+100% { overflow: auto; }
+}
+.site-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    background: radial-gradient(circle at 50% 42%, var(--navy) 0%, var(--navy-deep) 75%);
+    animation: loaderExit .8s cubic-bezier(.76,0,.24,1) forwards 2.6s;
+}
+.loader-burner {
+    position: relative;
+    width: 168px;
+    height: 168px;
+    flex-shrink: 0;
+}
+.loader-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 4px dashed var(--blue);
+    opacity: 0;
+    animation: loaderRingIn .5s ease forwards .05s, spin 30s linear infinite .6s;
+}
+.loader-inner {
+    position: absolute;
+    inset: 24px;
+    border-radius: 50%;
+    background: var(--navy-deep);
+    box-shadow: inset 0 8px 18px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.05);
+    transform: scale(0);
+    opacity: 0;
+    animation: loaderPop .5s cubic-bezier(.34,1.56,.64,1) forwards .3s;
+}
+.loader-knob {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--orange);
+    opacity: 0;
+    box-shadow: 0 0 0 6px rgba(247,127,0,.2);
+    animation: loaderPop .35s ease forwards .6s, knobTurn 1.2s cubic-bezier(.65,0,.35,1) .75s;
+}
+.loader-flame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 9px;
+    height: 18px;
+    margin: -9px 0 0 -4.5px;
+    background: linear-gradient(180deg, #FFD98A 0%, var(--orange) 55%, var(--ember) 100%);
+    border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+    transform-origin: 4.5px 38px;
+    opacity: 0;
+    animation: loaderFlameIn .35s ease forwards var(--fdelay,1s), loaderFlicker 1.3s ease-in-out infinite var(--fdelay,1s);
+}
+.loader-spark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0;
+    box-shadow: 0 0 12px 4px rgba(255,255,255,.8);
+    animation: loaderSpark .4s ease-out forwards .95s;
+}
+.loader-brand {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: loaderFadeUp .55s ease forwards 1.45s;
+}
+.loader-title {
+    display: block;
+    color: #fff;
+    font-weight: 900;
+    font-size: 1.1rem;
+    letter-spacing: .2px;
+}
+.loader-sub {
+    display: block;
+    color: rgba(255,255,255,.6);
+    font-size: .8rem;
+    margin-top: 6px;
+}
+.loader-bar {
+    width: 150px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.15);
+    overflow: hidden;
+    opacity: 0;
+    animation: loaderFadeUp .4s ease forwards 1.7s;
+}
+.loader-bar-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--orange), var(--ember));
+    animation: loaderBarFill 1s ease forwards 1.8s;
+}
+@keyframes loaderRingIn { to { opacity: 1; } }
+@keyframes loaderPop { to { opacity: 1; transform: scale(1); } }
+@keyframes knobTurn { 0% { transform: rotate(0); } 100% { transform: rotate(210deg); } }
+@keyframes loaderSpark {
+0% { opacity: 0; transform: scale(.4); }
+40% { opacity: 1; transform: scale(1.6); }
+100% { opacity: 0; transform: scale(.6); }
+}
+@keyframes loaderFlameIn {
+from { transform: rotate(var(--rot)) translateY(-64px) scale(0); opacity: 0; }
+to { transform: rotate(var(--rot)) translateY(-64px) scale(1); opacity: 1; }
+}
+@keyframes loaderFlicker {
+0%, 100% { transform: rotate(var(--rot)) translateY(-64px) scale(1); opacity: 1; }
+50% { transform: rotate(var(--rot)) translateY(-64px) scale(.82); opacity: .8; }
+}
+@keyframes loaderFadeUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes loaderBarFill { to { width: 100%; } }
+@keyframes loaderExit {
+0% { clip-path: circle(150% at 50% 50%); opacity: 1; }
+65% { clip-path: circle(55% at 50% 50%); opacity: 1; }
+100% { clip-path: circle(0% at 50% 50%); opacity: 0; }
+}
+.site-loader.done {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ---------- Staggered page reveal (synced with loader exit) ---------- */
+header.site {
+    opacity: 0;
+    transform: translateY(-14px);
+    animation: revealDown .6s ease forwards 2.75s;
+}
+.hero-copy .eyebrow {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: revealUp .55s ease forwards 2.85s;
+}
+.hero-copy h1 {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: revealUp .55s ease forwards 2.95s;
+}
+.hero-copy p.lead {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: revealUp .55s ease forwards 3.05s;
+}
+.hero-copy .hero-actions {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: revealUp .55s ease forwards 3.15s;
+}
+.hero-copy .trust-row {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: revealUp .55s ease forwards 3.25s;
+}
+.burner-stage {
+    opacity: 0;
+    transform: scale(.82);
+    animation: revealScale .7s cubic-bezier(.34,1.2,.64,1) forwards 3s;
+}
+@keyframes revealDown { to { opacity: 1; transform: translateY(0); } }
+@keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes revealScale { to { opacity: 1; transform: scale(1); } }
 </style>
 </head>
 <body>
+<div class="site-loader" id="siteLoader" role="status" aria-label="در حال بارگذاری صفحه">
+  <div class="loader-burner">
+    <div class="loader-ring"></div>
+    <div class="loader-inner"></div>
+    <div class="loader-spark"></div>
+    <div class="loader-knob"></div>
+    <div class="loader-flame" style="--rot:0deg;--fdelay:1s"></div>
+    <div class="loader-flame" style="--rot:30deg;--fdelay:1.03s"></div>
+    <div class="loader-flame" style="--rot:60deg;--fdelay:1.06s"></div>
+    <div class="loader-flame" style="--rot:90deg;--fdelay:.97s"></div>
+    <div class="loader-flame" style="--rot:120deg;--fdelay:1.05s"></div>
+    <div class="loader-flame" style="--rot:150deg;--fdelay:1.1s"></div>
+    <div class="loader-flame" style="--rot:180deg;--fdelay:1s"></div>
+    <div class="loader-flame" style="--rot:210deg;--fdelay:1.04s"></div>
+    <div class="loader-flame" style="--rot:240deg;--fdelay:.98s"></div>
+    <div class="loader-flame" style="--rot:270deg;--fdelay:1.07s"></div>
+    <div class="loader-flame" style="--rot:300deg;--fdelay:1.02s"></div>
+    <div class="loader-flame" style="--rot:330deg;--fdelay:1.09s"></div>
+  </div>
+  <div class="loader-brand">
+    <span class="loader-title">تعمیرگاه تخصصی پاکدشت</span>
+    <span class="loader-sub">اجاق گاز • هود • فر برقی و گازی</span>
+  </div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
 <header class="site">
   <div class="container nav-wrap"> <a href="#top" class="logo" aria-label="بازگشت به ابتدای صفحه">
     <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
@@ -994,6 +1211,7 @@ outline-offset:2px;
         <article class="service-card">
           <div class="badge-ring"><span></span></div>
           <h3>نصب اصولی اجاق گاز هود و انواع فر برقی وگازی</h3>
+
           <p>نصب استاندارد اجاق گاز هود و انواع فر برقی وگازی رومیزی و توکار مطابق اصول ایمنی، تست نشتی پس از نصب.</p>
         </article>
         <article class="service-card">
@@ -1365,6 +1583,18 @@ outline-offset:2px;
     successBox.classList.add('show');
     form.reset();
   });
+
+  // Ignition loader — remove from DOM once its exit animation finishes
+  const siteLoader = document.getElementById('siteLoader');
+  if (siteLoader) {
+    siteLoader.addEventListener('animationend', (e) => {
+      if (e.animationName === 'loaderExit') {
+        siteLoader.classList.add('done');
+      }
+    });
+    // Fallback in case the animation event doesn't fire (e.g. older browsers)
+    setTimeout(() => siteLoader.classList.add('done'), 3600);
+  }
 
   document.getElementById('rubikaSend').addEventListener('click', () => {
     const lines = buildRequestMessage();
