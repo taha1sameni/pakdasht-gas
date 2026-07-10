@@ -22,43 +22,44 @@
         .premium-bg span{
             position:absolute;
             border-radius:50%;
-            filter:blur(80px);
-            animation:float 12s ease-in-out infinite alternate;
+            filter:blur(90px);
+            animation:float 14s ease-in-out infinite alternate, hueDrift 18s ease-in-out infinite;
+            opacity:.9;
         }
 
         .premium-bg span:nth-child(1){
-            width:320px;
-            height:320px;
-            background:#ff7a0035;
+            width:340px;
+            height:340px;
+            background:#F77F0040;
             top:-80px;
             left:-80px;
         }
 
         .premium-bg span:nth-child(2){
-            width:260px;
-            height:260px;
-            background:#3b82f635;
+            width:280px;
+            height:280px;
+            background:#1C729340;
             right:-70px;
             top:120px;
-            animation-delay:2s;
+            animation-delay:2s, 1s;
         }
 
         .premium-bg span:nth-child(3){
-            width:280px;
-            height:280px;
-            background:#22c55e30;
+            width:300px;
+            height:300px;
+            background:#B8863B38;
             bottom:-100px;
             left:20%;
-            animation-delay:4s;
+            animation-delay:4s, 2s;
         }
 
         .premium-bg span:nth-child(4){
-            width:350px;
-            height:350px;
-            background:#f59e0b25;
+            width:370px;
+            height:370px;
+            background:#C1440E30;
             bottom:-120px;
             right:10%;
-            animation-delay:6s;
+            animation-delay:6s, 3s;
         }
 
         @keyframes float{
@@ -66,8 +67,13 @@
                 transform:translateY(0) translateX(0) scale(1);
             }
             to{
-                transform:translateY(-80px) translateX(60px) scale(1.2);
+                transform:translateY(-90px) translateX(70px) scale(1.25);
             }
+        }
+
+        @keyframes hueDrift{
+            0%, 100%{ filter:blur(90px) hue-rotate(0deg); }
+            50%{ filter:blur(90px) hue-rotate(18deg); }
         }
     </style>
 </div>
@@ -140,6 +146,9 @@ AOS.init({
 --shadow:0 10px 30px -12px rgba(11,61,98,.25);
 --shadow-lg:0 24px 60px -20px rgba(8,42,69,.35);
 --shadow-warm:0 14px 34px -14px rgba(247,127,0,.4);
+--glow-orange:0 0 0 4px rgba(247,127,0,.14), 0 0 34px -4px rgba(247,127,0,.55);
+--gradient-warm:linear-gradient(135deg, var(--orange) 0%, var(--brass) 55%, var(--ember) 100%);
+--gradient-cool:linear-gradient(135deg, var(--blue) 0%, var(--navy) 100%);
 }
 * {
     box-sizing: border-box;
@@ -1361,6 +1370,213 @@ header.site {
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* =====================================================
+   VISUAL POLISH PASS — richer color, glow & motion
+===================================================== */
+
+/* Selection & scrollbar */
+::selection {
+    background: var(--orange);
+    color: #fff;
+}
+::-webkit-scrollbar {
+    width: 11px;
+}
+::-webkit-scrollbar-track {
+    background: var(--cream);
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--orange), var(--ember));
+    border-radius: 999px;
+    border: 2px solid var(--cream);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--ember), var(--orange));
+}
+
+/* Eyebrow pulse dot */
+.eyebrow::before {
+    animation: dotPulse 1.8s ease-in-out infinite;
+}
+@keyframes dotPulse {
+0%, 100% { box-shadow: 0 0 0 0 rgba(247,127,0,.55); }
+50% { box-shadow: 0 0 0 7px rgba(247,127,0,0); }
+}
+
+/* Hero headline — living gradient shimmer */
+.hero-copy h1 {
+    background: linear-gradient(100deg, var(--navy-deep) 24%, var(--ember) 44%, var(--orange) 54%, var(--navy-deep) 76%);
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: revealUp .55s ease forwards 2.95s, shine 7s linear infinite 3.5s;
+}
+@keyframes shine {
+    to { background-position: -250% center; }
+}
+
+/* Buttons — deeper glow + smoother lift */
+.btn-primary:hover {
+    box-shadow: 0 22px 44px -14px rgba(247,127,0,.6), 0 0 34px -4px rgba(247,127,0,.45);
+}
+.btn-outline {
+    transition: transform .22s cubic-bezier(.34,1.4,.64,1), box-shadow .22s ease, background .3s ease, border-color .22s ease, color .2s ease;
+}
+
+/* Logo mark micro-interaction */
+.logo .mark {
+    transition: transform .4s cubic-bezier(.34,1.4,.64,1);
+}
+.logo:hover .mark {
+    transform: rotate(18deg) scale(1.08);
+}
+
+/* Ambient gauge ring — slow counter-rotation for depth */
+.gauge-ring {
+    animation: spin 70s linear infinite reverse;
+}
+.flame {
+    filter: drop-shadow(0 0 7px rgba(247,127,0,.55));
+}
+.burner .ring-outer {
+    box-shadow: 0 0 26px -6px rgba(28,114,147,.5);
+}
+
+/* Trust chips — livelier hover */
+.trust-item {
+    position: relative;
+}
+.trust-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: var(--gradient-warm);
+    opacity: 0;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: opacity .25s ease;
+}
+.trust-item:hover::before {
+    opacity: 1;
+}
+.trust-item:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+/* Service cards — colored glow + icon shine sweep */
+.service-card:hover {
+    box-shadow: 0 26px 60px -20px rgba(8,42,69,.32), 0 12px 40px -14px rgba(247,127,0,.28);
+}
+.badge-ring {
+    position: relative;
+    overflow: hidden;
+}
+.badge-ring::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,.55) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform .6s ease;
+}
+.service-card:hover .badge-ring::after {
+    transform: translateX(120%);
+}
+
+/* About visual — animated conic glow ring */
+.about-visual {
+    isolation: isolate;
+}
+.about-visual::after {
+    animation: driftRing 10s ease-in-out infinite alternate;
+}
+@keyframes driftRing {
+    from { transform: translate(0,0) scale(1); }
+    to { transform: translate(10px,-14px) scale(1.08); }
+}
+
+/* Info items */
+.info-item .icon {
+    transition: transform .3s cubic-bezier(.34,1.4,.64,1), box-shadow .3s ease, color .3s ease;
+}
+.info-item:hover .icon {
+    transform: translateY(-3px) rotate(-6deg);
+    color: #fff;
+    background: var(--gradient-warm);
+    box-shadow: var(--shadow-warm);
+}
+
+/* Testimonial cards — subtle warm glow on hover */
+.testi-card:hover {
+    box-shadow: 0 24px 55px -18px rgba(8,42,69,.3), 0 8px 30px -12px rgba(247,127,0,.22);
+}
+.avatar {
+    transition: transform .3s cubic-bezier(.34,1.4,.64,1);
+}
+.testi-card:hover .avatar {
+    transform: scale(1.08) rotate(-4deg);
+}
+
+/* FAQ — accent state when open */
+.faq-item.open .faq-q {
+    color: var(--ember);
+}
+.faq-q .ring-icon {
+    transition: transform .3s cubic-bezier(.34,1.4,.64,1), border-color .25s ease;
+}
+.faq-item.open .ring-icon {
+    border-color: var(--ember);
+}
+
+/* CTA band — breathing glow */
+.cta-band::before {
+    animation: pulseGlow 5s ease-in-out infinite;
+}
+@keyframes pulseGlow {
+0%, 100% { opacity: .55; transform: scale(1); }
+50% { opacity: 1; transform: scale(1.18); }
+}
+.cta-band .btn-primary {
+    box-shadow: 0 14px 34px -10px rgba(0,0,0,.4), var(--shadow-warm);
+}
+
+/* Footer top bar — slow shimmer */
+footer.site::before {
+    background-size: 220% 100%;
+    animation: shimmerBar 7s linear infinite;
+}
+@keyframes shimmerBar {
+    to { background-position: -220% 0; }
+}
+.footer-logo svg {
+    transition: transform .4s ease;
+}
+.footer-logo:hover svg {
+    transform: rotate(180deg);
+}
+
+/* Map frame gentle hover lift */
+.map-frame {
+    transition: box-shadow .3s ease, transform .3s ease;
+}
+.map-frame:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+.hero-copy h1 {
+    animation: none !important;
+    -webkit-text-fill-color: var(--navy-deep);
+    color: var(--navy-deep);
+    background: none;
+}
 }
 </style>
 </head>
