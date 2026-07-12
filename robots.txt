@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://taha1sameni.github.io/pakdasht-gas/sitemap.xml
